@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronLeft, Calendar, Clock } from "lucide-react";
+import { Check, ChevronLeft } from "lucide-react";
 
 const services = [
   { name: "Fade + Lineup", duration: "30 min", price: "1,500 JMD" },
@@ -21,51 +20,43 @@ export function BookingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="px-4 py-4 border-b border-border">
+      <div className="px-5 py-4">
         <div className="max-w-lg mx-auto flex items-center gap-3">
           {step > 0 && (
-            <button onClick={() => setStep(step - 1)} className="p-1 rounded-lg hover:bg-secondary">
-              <ChevronLeft className="w-5 h-5" />
+            <button onClick={() => setStep(step - 1)} className="p-1">
+              <ChevronLeft className="w-4 h-4" />
             </button>
           )}
           <div>
-            <h1 className="text-lg font-bold text-foreground">Marcus Cuts</h1>
+            <h1 className="text-base font-semibold text-foreground">Marcus Cuts</h1>
             <p className="text-xs text-muted-foreground">Book an appointment</p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-4 py-6">
-        {/* Step indicators */}
-        <div className="flex items-center gap-2 mb-6">
-          {["Service", "Date & Time", "Confirm"].map((label, i) => (
-            <div key={i} className="flex-1">
-              <div className={`h-1 rounded-full mb-1 ${i <= step ? "bg-primary" : "bg-muted"}`} />
-              <p className={`text-[10px] ${i <= step ? "text-primary font-medium" : "text-muted-foreground"}`}>{label}</p>
-            </div>
+      <div className="max-w-lg mx-auto px-5 py-4">
+        {/* Progress */}
+        <div className="flex gap-1.5 mb-8">
+          {[0, 1, 2].map(i => (
+            <div key={i} className={`h-0.5 flex-1 rounded-full ${i <= step ? "bg-primary" : "bg-muted"}`} />
           ))}
         </div>
 
         {step === 0 && (
           <div>
-            <h2 className="text-base font-semibold text-foreground mb-4">Select a service</h2>
-            <div className="space-y-2">
+            <h2 className="text-sm font-medium text-foreground mb-4">Select a service</h2>
+            <div className="space-y-px">
               {services.map(s => (
                 <button
                   key={s.name}
                   onClick={() => { setSelectedService(s.name); setStep(1); }}
-                  className={`w-full bg-card rounded-xl border px-4 py-3.5 text-left transition-all hover:shadow-sm ${
-                    selectedService === s.name ? "border-primary" : "border-border"
-                  }`}
+                  className="w-full flex items-center justify-between py-3.5 text-left hover:bg-secondary/50 -mx-2 px-2 rounded-lg transition-colors"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{s.name}</p>
-                      <p className="text-xs text-muted-foreground">{s.duration}</p>
-                    </div>
-                    <span className="text-sm font-semibold text-foreground">{s.price}</span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{s.name}</p>
+                    <p className="text-xs text-muted-foreground">{s.duration}</p>
                   </div>
+                  <span className="text-sm text-foreground">{s.price}</span>
                 </button>
               ))}
             </div>
@@ -74,32 +65,32 @@ export function BookingPage() {
 
         {step === 1 && (
           <div>
-            <h2 className="text-base font-semibold text-foreground mb-4">Pick a date</h2>
-            <div className="grid grid-cols-5 gap-2 mb-6">
+            <h2 className="text-sm font-medium text-foreground mb-4">Pick a date</h2>
+            <div className="flex gap-2 mb-6">
               {[14, 15, 16, 17, 18].map(day => (
                 <button
                   key={day}
                   onClick={() => setSelectedDate(day)}
-                  className={`aspect-square rounded-xl border flex flex-col items-center justify-center transition-all ${
-                    selectedDate === day ? "border-primary bg-accent" : "border-border bg-card"
+                  className={`flex-1 py-3 rounded-lg text-center transition-colors ${
+                    selectedDate === day ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
                   }`}
                 >
-                  <span className="text-lg font-bold text-foreground">{day}</span>
-                  <span className="text-[10px] text-muted-foreground">Apr</span>
+                  <span className="text-base font-semibold block">{day}</span>
+                  <span className="text-[10px]">Apr</span>
                 </button>
               ))}
             </div>
 
             {selectedDate && (
               <>
-                <h2 className="text-base font-semibold text-foreground mb-3">Available times</h2>
+                <h2 className="text-sm font-medium text-foreground mb-3">Available times</h2>
                 <div className="grid grid-cols-3 gap-2">
                   {availableSlots.map(slot => (
                     <button
                       key={slot}
                       onClick={() => { setSelectedSlot(slot); setStep(2); }}
-                      className={`h-10 rounded-lg border text-sm font-medium transition-all ${
-                        selectedSlot === slot ? "border-primary bg-accent text-primary" : "border-border bg-card text-foreground hover:bg-secondary"
+                      className={`h-10 rounded-lg text-sm font-medium transition-colors ${
+                        selectedSlot === slot ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground hover:bg-muted"
                       }`}
                     >
                       {slot}
@@ -113,55 +104,33 @@ export function BookingPage() {
 
         {step === 2 && (
           <div>
-            <div className="bg-card rounded-xl border border-border p-5 mb-6">
-              <h2 className="text-base font-semibold text-foreground mb-4">Confirm your booking</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Service</span>
-                  <span className="font-medium text-foreground">{selectedService}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Date</span>
-                  <span className="font-medium text-foreground">April {selectedDate}, 2026</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Time</span>
-                  <span className="font-medium text-foreground">{selectedSlot}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Price</span>
-                  <span className="font-medium text-foreground">{services.find(s => s.name === selectedService)?.price}</span>
-                </div>
-              </div>
+            <h2 className="text-sm font-medium text-foreground mb-4">Confirm booking</h2>
+            <div className="space-y-2.5 text-sm mb-6">
+              <div className="flex justify-between"><span className="text-muted-foreground">Service</span><span className="font-medium">{selectedService}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">April {selectedDate}, 2026</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Time</span><span className="font-medium">{selectedSlot}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Price</span><span className="font-medium">{services.find(s => s.name === selectedService)?.price}</span></div>
             </div>
-
-            <Button
-              className="w-full"
-              size="lg"
-              onClick={() => setStep(3)}
-            >
-              <Check className="w-4 h-4" />
+            <Button className="w-full" size="lg" onClick={() => setStep(3)}>
               Confirm booking
             </Button>
           </div>
         )}
 
         {step === 3 && (
-          <div className="text-center py-8">
-            <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
-              <Check className="w-7 h-7 text-primary" />
+          <div className="text-center py-12">
+            <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+              <Check className="w-6 h-6 text-primary" />
             </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">Booking confirmed</h2>
-            <p className="text-sm text-muted-foreground mb-1">{selectedService} with Marcus Cuts</p>
-            <p className="text-sm text-muted-foreground">April {selectedDate}, 2026 at {selectedSlot}</p>
-            <p className="text-xs text-muted-foreground mt-6">You'll receive a confirmation reminder before your appointment.</p>
+            <h2 className="text-lg font-semibold text-foreground mb-1">Confirmed</h2>
+            <p className="text-sm text-muted-foreground">{selectedService} · April {selectedDate} at {selectedSlot}</p>
           </div>
         )}
       </div>
 
-      <div className="px-4 py-4 text-center">
-        <p className="text-xs text-muted-foreground">
-          Powered by <span className="font-medium text-foreground">Linkup<span className="text-primary">Organiser</span></span>
+      <div className="px-5 py-6 text-center">
+        <p className="text-[10px] text-muted-foreground">
+          Powered by Linkup<span className="text-primary">Organiser</span>
         </p>
       </div>
     </div>

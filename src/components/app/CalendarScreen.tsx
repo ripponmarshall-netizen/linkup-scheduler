@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -23,31 +23,27 @@ const sampleEvents: Record<string, { time: string; client: string; service: stri
 export function CalendarScreen() {
   const [selectedDay, setSelectedDay] = useState(14);
   const month = "April 2026";
-
   const daysInMonth = Array.from({ length: 30 }, (_, i) => i + 1);
-  const startWeekday = 2; // April 2026 starts on Wednesday (index 2)
-
+  const startWeekday = 2;
   const events = sampleEvents[String(selectedDay)] || [];
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="px-4 pt-6 pb-4">
+      <div className="px-5 pt-8 pb-4">
         <div className="flex items-center justify-between">
-          <button className="p-2 rounded-lg hover:bg-secondary"><ChevronLeft className="w-5 h-5 text-foreground" /></button>
-          <h1 className="text-lg font-bold text-foreground">{month}</h1>
-          <button className="p-2 rounded-lg hover:bg-secondary"><ChevronRight className="w-5 h-5 text-foreground" /></button>
+          <button className="p-2 -ml-2 rounded-lg hover:bg-secondary"><ChevronLeft className="w-4 h-4 text-foreground" /></button>
+          <h1 className="text-base font-semibold text-foreground">{month}</h1>
+          <button className="p-2 -mr-2 rounded-lg hover:bg-secondary"><ChevronRight className="w-4 h-4 text-foreground" /></button>
         </div>
       </div>
 
-      {/* Week header */}
-      <div className="px-4 grid grid-cols-7 gap-1 mb-1">
+      <div className="px-5 grid grid-cols-7 gap-0.5 mb-1">
         {weekDays.map(d => (
-          <div key={d} className="text-center text-[10px] font-medium text-muted-foreground py-1">{d}</div>
+          <div key={d} className="text-center text-[10px] text-muted-foreground py-1">{d}</div>
         ))}
       </div>
 
-      {/* Calendar grid */}
-      <div className="px-4 grid grid-cols-7 gap-1 mb-6">
+      <div className="px-5 grid grid-cols-7 gap-0.5 mb-6">
         {Array.from({ length: startWeekday }).map((_, i) => <div key={`e-${i}`} />)}
         {daysInMonth.map(day => {
           const hasEvents = sampleEvents[String(day)];
@@ -57,8 +53,8 @@ export function CalendarScreen() {
             <button
               key={day}
               onClick={() => setSelectedDay(day)}
-              className={`aspect-square rounded-lg flex flex-col items-center justify-center text-sm font-medium transition-all ${
-                isSelected ? "bg-primary text-primary-foreground" : isToday ? "bg-accent text-primary" : "text-foreground hover:bg-secondary"
+              className={`aspect-square rounded-lg flex flex-col items-center justify-center text-sm transition-colors ${
+                isSelected ? "bg-primary text-primary-foreground font-semibold" : isToday ? "text-primary font-semibold" : "text-foreground hover:bg-secondary"
               }`}
             >
               {day}
@@ -68,23 +64,17 @@ export function CalendarScreen() {
         })}
       </div>
 
-      {/* Events for selected day */}
-      <div className="px-4 mb-8">
-        <h2 className="text-sm font-semibold text-foreground mb-3">
+      <div className="px-5 mb-8">
+        <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
           {selectedDay === 14 ? "Today" : `April ${selectedDay}`}
         </h2>
         {events.length === 0 ? (
-          <div className="bg-card rounded-xl border border-dashed border-border p-8 text-center">
-            <p className="text-sm text-muted-foreground">No appointments this day.</p>
-          </div>
+          <p className="text-sm text-muted-foreground py-6 text-center">No appointments.</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-px">
             {events.map((e, i) => (
-              <div key={i} className="bg-card rounded-xl border border-border px-4 py-3 flex items-center gap-3">
-                <div className="flex items-center gap-2 shrink-0">
-                  <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground w-16">{e.time}</span>
-                </div>
+              <div key={i} className="flex items-center gap-4 py-3">
+                <span className="text-xs text-muted-foreground w-16 shrink-0 tabular-nums">{e.time}</span>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{e.client}</p>
                   <p className="text-xs text-muted-foreground truncate">{e.service}</p>
