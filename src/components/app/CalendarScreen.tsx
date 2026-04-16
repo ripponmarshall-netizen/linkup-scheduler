@@ -29,11 +29,15 @@ export function CalendarScreen() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="px-5 pt-8 pb-4">
+      <div className="px-5 pt-8 pb-4 animate-fade-up">
         <div className="flex items-center justify-between">
-          <button className="p-2 -ml-2 rounded-lg hover:bg-secondary"><ChevronLeft className="w-4 h-4 text-foreground" /></button>
+          <button className="p-2 -ml-2 rounded-lg hover:bg-secondary transition-colors duration-150 active:scale-95">
+            <ChevronLeft className="w-4 h-4 text-foreground" />
+          </button>
           <h1 className="text-base font-semibold text-foreground">{month}</h1>
-          <button className="p-2 -mr-2 rounded-lg hover:bg-secondary"><ChevronRight className="w-4 h-4 text-foreground" /></button>
+          <button className="p-2 -mr-2 rounded-lg hover:bg-secondary transition-colors duration-150 active:scale-95">
+            <ChevronRight className="w-4 h-4 text-foreground" />
+          </button>
         </div>
       </div>
 
@@ -53,12 +57,16 @@ export function CalendarScreen() {
             <button
               key={day}
               onClick={() => setSelectedDay(day)}
-              className={`aspect-square rounded-lg flex flex-col items-center justify-center text-sm transition-colors ${
-                isSelected ? "bg-primary text-primary-foreground font-semibold" : isToday ? "text-primary font-semibold" : "text-foreground hover:bg-secondary"
+              className={`aspect-square rounded-lg flex flex-col items-center justify-center text-sm transition-all duration-200 ${
+                isSelected
+                  ? "bg-primary text-primary-foreground font-semibold shadow-sm scale-[1.05]"
+                  : isToday
+                    ? "text-primary font-semibold"
+                    : "text-foreground hover:bg-secondary active:scale-95"
               }`}
             >
               {day}
-              {hasEvents && !isSelected && <div className="w-1 h-1 rounded-full bg-primary mt-0.5" />}
+              {hasEvents && !isSelected && <div className="w-1 h-1 rounded-full bg-primary mt-0.5 transition-all duration-200" />}
             </button>
           );
         })}
@@ -69,11 +77,15 @@ export function CalendarScreen() {
           {selectedDay === 14 ? "Today" : `April ${selectedDay}`}
         </h2>
         {events.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-6 text-center">No appointments.</p>
+          <p className="text-sm text-muted-foreground py-6 text-center animate-fade-in">No appointments.</p>
         ) : (
           <div className="space-y-px">
             {events.map((e, i) => (
-              <div key={i} className="flex items-center gap-4 py-3">
+              <div
+                key={i}
+                className="flex items-center gap-4 py-3 animate-fade-up"
+                style={{ animationDelay: `${i * 40}ms` }}
+              >
                 <span className="text-xs text-muted-foreground w-16 shrink-0 tabular-nums">{e.time}</span>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{e.client}</p>

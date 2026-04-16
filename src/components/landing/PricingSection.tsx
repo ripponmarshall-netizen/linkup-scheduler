@@ -10,7 +10,7 @@ export function PricingSection() {
 
       <div className="space-y-4">
         {/* Free */}
-        <div className="rounded-xl border border-border p-5">
+        <div className="rounded-xl border border-border p-5 transition-all duration-200 hover:shadow-sm">
           <div className="flex items-baseline justify-between mb-3">
             <h3 className="text-base font-semibold text-foreground">Free</h3>
             <span className="text-sm text-muted-foreground">0 JMD</span>
@@ -23,13 +23,13 @@ export function PricingSection() {
               </li>
             ))}
           </ul>
-          <Button asChild variant="outline" className="w-full">
+          <Button asChild variant="outline" className="w-full transition-all duration-200 active:scale-[0.98]">
             <Link to="/onboarding">Start free</Link>
           </Button>
         </div>
 
         {/* Pro */}
-        <div className="rounded-xl border border-primary/30 bg-accent/30 p-5">
+        <div className="rounded-xl border border-primary/25 bg-accent/20 p-5 transition-all duration-200 hover:shadow-sm">
           <div className="flex items-baseline justify-between mb-1">
             <h3 className="text-base font-semibold text-foreground">Pro</h3>
             <span className="text-sm font-semibold text-foreground">500 JMD/mo</span>
@@ -45,7 +45,7 @@ export function PricingSection() {
               </li>
             ))}
           </ul>
-          <Button asChild variant="hero" className="w-full">
+          <Button asChild variant="hero" className="w-full transition-all duration-200 active:scale-[0.98]">
             <Link to="/onboarding">Try Pro free for 14 days</Link>
           </Button>
         </div>

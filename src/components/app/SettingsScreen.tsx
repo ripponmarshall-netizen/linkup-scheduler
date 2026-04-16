@@ -30,22 +30,22 @@ export function SettingsScreen() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="px-5 pt-8 pb-4">
+      <div className="px-5 pt-8 pb-4 animate-fade-up">
         <h1 className="text-lg font-semibold text-foreground">Settings</h1>
       </div>
 
       <div className="px-5 space-y-6 mb-8">
         {settingsSections.map((section, i) => (
-          <div key={i}>
+          <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
             <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">{section.title}</h2>
             <div className="space-y-px">
               {section.items.map((item, j) => {
                 const content = (
-                  <div className="flex items-center justify-between py-3 hover:bg-secondary/50 -mx-2 px-2 rounded-lg transition-colors">
+                  <div className="flex items-center justify-between py-3.5 hover:bg-secondary/50 -mx-2 px-2 rounded-lg transition-all duration-200 active:scale-[0.99]">
                     <span className="text-sm text-foreground">{item.label}</span>
                     <div className="flex items-center gap-1.5 shrink-0">
                       {item.value && <span className="text-xs text-muted-foreground">{item.value}</span>}
-                      <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+                      <ChevronRight className="w-3.5 h-3.5 text-muted-foreground transition-transform duration-150" />
                     </div>
                   </div>
                 );
@@ -61,7 +61,7 @@ export function SettingsScreen() {
 
         <button
           onClick={() => navigate({ to: "/" })}
-          className="flex items-center gap-2 py-3 text-sm text-destructive"
+          className="flex items-center gap-2 py-3 text-sm text-destructive transition-opacity duration-150 hover:opacity-80 active:scale-[0.98]"
         >
           <LogOut className="w-4 h-4" />
           Sign out
