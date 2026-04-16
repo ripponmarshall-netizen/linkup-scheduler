@@ -15,11 +15,19 @@ export function FeaturesSection() {
         </h2>
         <div className="space-y-4">
           {features.map((f, i) => (
-            <div key={i} className="flex items-start justify-between py-2">
+            <div
+              key={i}
+              className="flex items-start justify-between py-2.5 animate-fade-up"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
               <div>
                 <p className="text-sm font-medium text-foreground">
                   {f.label}
-                  {f.pro && <span className="ml-2 text-[10px] font-semibold text-primary bg-accent px-1.5 py-0.5 rounded">PRO</span>}
+                  {f.pro && (
+                    <span className="ml-2 text-[10px] font-semibold text-primary bg-accent px-1.5 py-0.5 rounded transition-colors duration-200">
+                      PRO
+                    </span>
+                  )}
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">{f.desc}</p>
               </div>

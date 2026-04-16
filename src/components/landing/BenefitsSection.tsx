@@ -21,7 +21,7 @@ export function BenefitsSection() {
       </h2>
       <div className="space-y-8">
         {benefits.map((b, i) => (
-          <div key={i}>
+          <div key={i} className="animate-fade-up" style={{ animationDelay: `${i * 80}ms` }}>
             <h3 className="text-base font-semibold text-foreground">{b.title}</h3>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{b.description}</p>
           </div>

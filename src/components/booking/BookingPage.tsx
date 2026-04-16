@@ -23,7 +23,7 @@ export function BookingPage() {
       <div className="px-5 py-4">
         <div className="max-w-lg mx-auto flex items-center gap-3">
           {step > 0 && (
-            <button onClick={() => setStep(step - 1)} className="p-1">
+            <button onClick={() => setStep(step - 1)} className="p-1 transition-all duration-150 active:scale-90">
               <ChevronLeft className="w-4 h-4" />
             </button>
           )}
@@ -38,25 +38,29 @@ export function BookingPage() {
         {/* Progress */}
         <div className="flex gap-1.5 mb-8">
           {[0, 1, 2].map(i => (
-            <div key={i} className={`h-0.5 flex-1 rounded-full ${i <= step ? "bg-primary" : "bg-muted"}`} />
+            <div
+              key={i}
+              className={`h-0.5 flex-1 rounded-full transition-all duration-300 ${i <= step ? "bg-primary" : "bg-muted"}`}
+            />
           ))}
         </div>
 
         {step === 0 && (
-          <div>
+          <div className="animate-fade-up">
             <h2 className="text-sm font-medium text-foreground mb-4">Select a service</h2>
             <div className="space-y-px">
-              {services.map(s => (
+              {services.map((s, idx) => (
                 <button
                   key={s.name}
                   onClick={() => { setSelectedService(s.name); setStep(1); }}
-                  className="w-full flex items-center justify-between py-3.5 text-left hover:bg-secondary/50 -mx-2 px-2 rounded-lg transition-colors"
+                  className="w-full flex items-center justify-between py-3.5 text-left hover:bg-secondary/50 -mx-2 px-2 rounded-lg transition-all duration-200 active:scale-[0.99] animate-fade-up"
+                  style={{ animationDelay: `${idx * 40}ms` }}
                 >
                   <div>
                     <p className="text-sm font-medium text-foreground">{s.name}</p>
                     <p className="text-xs text-muted-foreground">{s.duration}</p>
                   </div>
-                  <span className="text-sm text-foreground">{s.price}</span>
+                  <span className="text-sm text-foreground tabular-nums">{s.price}</span>
                 </button>
               ))}
             </div>
@@ -64,15 +68,17 @@ export function BookingPage() {
         )}
 
         {step === 1 && (
-          <div>
+          <div className="animate-fade-up">
             <h2 className="text-sm font-medium text-foreground mb-4">Pick a date</h2>
             <div className="flex gap-2 mb-6">
               {[14, 15, 16, 17, 18].map(day => (
                 <button
                   key={day}
                   onClick={() => setSelectedDate(day)}
-                  className={`flex-1 py-3 rounded-lg text-center transition-colors ${
-                    selectedDate === day ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
+                  className={`flex-1 py-3 rounded-lg text-center transition-all duration-200 ${
+                    selectedDate === day
+                      ? "bg-primary text-primary-foreground shadow-sm scale-[1.03]"
+                      : "bg-secondary text-foreground active:scale-[0.97]"
                   }`}
                 >
                   <span className="text-base font-semibold block">{day}</span>
@@ -82,28 +88,30 @@ export function BookingPage() {
             </div>
 
             {selectedDate && (
-              <>
+              <div className="animate-fade-up">
                 <h2 className="text-sm font-medium text-foreground mb-3">Available times</h2>
                 <div className="grid grid-cols-3 gap-2">
                   {availableSlots.map(slot => (
                     <button
                       key={slot}
                       onClick={() => { setSelectedSlot(slot); setStep(2); }}
-                      className={`h-10 rounded-lg text-sm font-medium transition-colors ${
-                        selectedSlot === slot ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground hover:bg-muted"
+                      className={`h-11 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        selectedSlot === slot
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "bg-secondary text-foreground hover:bg-muted active:scale-[0.97]"
                       }`}
                     >
                       {slot}
                     </button>
                   ))}
                 </div>
-              </>
+              </div>
             )}
           </div>
         )}
 
         {step === 2 && (
-          <div>
+          <div className="animate-fade-up">
             <h2 className="text-sm font-medium text-foreground mb-4">Confirm booking</h2>
             <div className="space-y-2.5 text-sm mb-6">
               <div className="flex justify-between"><span className="text-muted-foreground">Service</span><span className="font-medium">{selectedService}</span></div>
@@ -111,16 +119,16 @@ export function BookingPage() {
               <div className="flex justify-between"><span className="text-muted-foreground">Time</span><span className="font-medium">{selectedSlot}</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Price</span><span className="font-medium">{services.find(s => s.name === selectedService)?.price}</span></div>
             </div>
-            <Button className="w-full" size="lg" onClick={() => setStep(3)}>
+            <Button className="w-full transition-all duration-200 active:scale-[0.98]" size="lg" onClick={() => setStep(3)}>
               Confirm booking
             </Button>
           </div>
         )}
 
         {step === 3 && (
-          <div className="text-center py-12">
-            <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
-              <Check className="w-6 h-6 text-primary" />
+          <div className="text-center py-12 animate-fade-up">
+            <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center mx-auto mb-4 animate-check">
+              <Check className="w-7 h-7 text-primary" />
             </div>
             <h2 className="text-lg font-semibold text-foreground mb-1">Confirmed</h2>
             <p className="text-sm text-muted-foreground">{selectedService} · April {selectedDate} at {selectedSlot}</p>
