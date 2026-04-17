@@ -1,35 +1,127 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Lock, CalendarDays, CalendarRange, TrendingUp, TrendingDown, Scissors, DollarSign } from "lucide-react";
+import {
+  Lock,
+  CalendarDays,
+  CalendarRange,
+  TrendingUp,
+  TrendingDown,
+  Scissors,
+  DollarSign,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Brush,
+} from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
+type MonthData = {
+  revenue: number;
+  prevRevenue: number;
+  weekCount: number;
+  monthCount: number;
+  busiestDay: string;
+  weekly: { day: string; count: number }[];
+  topServices: { name: string; count: number; icon: typeof Scissors; tint: string; iconColor: string }[];
+};
+
+const MONTHS: { label: string; data: MonthData }[] = [
+  {
+    label: "April 2026",
+    data: {
+      revenue: 142500,
+      prevRevenue: 128000,
+      weekCount: 23,
+      monthCount: 87,
+      busiestDay: "Tuesday",
+      weekly: [
+        { day: "Mon", count: 5 },
+        { day: "Tue", count: 7 },
+        { day: "Wed", count: 4 },
+        { day: "Thu", count: 3 },
+        { day: "Fri", count: 6 },
+        { day: "Sat", count: 2 },
+        { day: "Sun", count: 0 },
+      ],
+      topServices: [
+        { name: "Fade", count: 34, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 26, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 18, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+      ],
+    },
+  },
+  {
+    label: "March 2026",
+    data: {
+      revenue: 128000,
+      prevRevenue: 119500,
+      weekCount: 21,
+      monthCount: 79,
+      busiestDay: "Saturday",
+      weekly: [
+        { day: "Mon", count: 4 },
+        { day: "Tue", count: 5 },
+        { day: "Wed", count: 3 },
+        { day: "Thu", count: 4 },
+        { day: "Fri", count: 5 },
+        { day: "Sat", count: 6 },
+        { day: "Sun", count: 1 },
+      ],
+      topServices: [
+        { name: "Fade", count: 30, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 22, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 15, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+      ],
+    },
+  },
+  {
+    label: "February 2026",
+    data: {
+      revenue: 119500,
+      prevRevenue: 124000,
+      weekCount: 19,
+      monthCount: 72,
+      busiestDay: "Friday",
+      weekly: [
+        { day: "Mon", count: 3 },
+        { day: "Tue", count: 4 },
+        { day: "Wed", count: 3 },
+        { day: "Thu", count: 4 },
+        { day: "Fri", count: 6 },
+        { day: "Sat", count: 5 },
+        { day: "Sun", count: 0 },
+      ],
+      topServices: [
+        { name: "Fade", count: 27, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Line up", count: 19, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+        { name: "Beard trim", count: 16, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+      ],
+    },
+  },
+];
 
 export function AnalyticsScreen() {
   const [isPro, setIsPro] = useState(false);
+  const [monthIdx, setMonthIdx] = useState(0);
+
+  const month = MONTHS[monthIdx];
+  const { revenue: currentRevenue, prevRevenue: previousRevenue, weekCount, monthCount, busiestDay, weekly: chartData, topServices } = month.data;
+  const topServiceName = topServices[0]?.name ?? "—";
+  const totalTopServices = topServices.reduce((sum, s) => sum + s.count, 0);
 
   const stats = [
-    { value: "23", label: "This week", icon: CalendarDays, tint: "bg-tint-blue", iconColor: "text-primary" },
-    { value: "87", label: "This month", icon: CalendarRange, tint: "bg-accent/60", iconColor: "text-primary" },
-    { value: "Tuesday", label: "Busiest day", icon: TrendingUp, tint: "bg-tint-amber", iconColor: "text-warning" },
-    { value: "Fade", label: "Top service", icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+    { value: String(weekCount), label: "This week", icon: CalendarDays, tint: "bg-tint-blue", iconColor: "text-primary" },
+    { value: String(monthCount), label: "This month", icon: CalendarRange, tint: "bg-accent/60", iconColor: "text-primary" },
+    { value: busiestDay, label: "Busiest day", icon: TrendingUp, tint: "bg-tint-amber", iconColor: "text-warning" },
+    { value: topServiceName, label: "Top service", icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
   ];
 
-  // Monthly revenue data
-  const currentRevenue = 142500;
-  const previousRevenue = 128000;
   const revenueDelta = currentRevenue - previousRevenue;
   const revenuePct = ((revenueDelta / previousRevenue) * 100).toFixed(1);
   const isUp = revenueDelta >= 0;
 
-  const chartData = [
-    { day: "Mon", count: 5 },
-    { day: "Tue", count: 7 },
-    { day: "Wed", count: 4 },
-    { day: "Thu", count: 3 },
-    { day: "Fri", count: 6 },
-    { day: "Sat", count: 2 },
-    { day: "Sun", count: 0 },
-  ];
+  const weeklyTotal = chartData.reduce((sum, d) => sum + d.count, 0);
 
   const formatJMD = (n: number) =>
     new Intl.NumberFormat("en-JM", { style: "currency", currency: "JMD", maximumFractionDigits: 0 }).format(n);
@@ -65,8 +157,35 @@ export function AnalyticsScreen() {
         </div>
       ) : (
         <div className="px-5 space-y-8 mb-8">
+          {/* Month selector */}
+          <div
+            className="flex items-center justify-between rounded-xl border border-border/60 bg-card px-2 py-1.5 animate-fade-up"
+            style={{ animationDelay: "20ms" }}
+          >
+            <button
+              onClick={() => setMonthIdx((i) => Math.min(i + 1, MONTHS.length - 1))}
+              disabled={monthIdx >= MONTHS.length - 1}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground transition-all duration-150 hover:bg-accent/60 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Previous month"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span key={month.label} className="text-sm font-medium text-foreground tabular-nums animate-fade-up">
+              {month.label}
+            </span>
+            <button
+              onClick={() => setMonthIdx((i) => Math.max(i - 1, 0))}
+              disabled={monthIdx === 0}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground transition-all duration-150 hover:bg-accent/60 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Next month"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
           {/* Monthly revenue card */}
           <div
+            key={`rev-${monthIdx}`}
             className="p-4 rounded-xl border border-border/60 bg-card animate-pop-in"
             style={{ animationDelay: "40ms" }}
           >
@@ -76,7 +195,7 @@ export function AnalyticsScreen() {
                   <DollarSign className="w-3.5 h-3.5 text-primary" />
                 </div>
                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Revenue this month
+                  Revenue
                 </span>
               </div>
             </div>
@@ -94,12 +213,12 @@ export function AnalyticsScreen() {
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-1.5">
-              {isUp ? "+" : "−"}{formatJMD(Math.abs(revenueDelta))} vs last month
+              {isUp ? "+" : "−"}{formatJMD(Math.abs(revenueDelta))} vs previous month
             </p>
           </div>
 
           {/* Stat grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div key={`stats-${monthIdx}`} className="grid grid-cols-2 gap-3">
             {stats.map((stat, i) => {
               const Icon = stat.icon;
               return (
@@ -116,13 +235,54 @@ export function AnalyticsScreen() {
             })}
           </div>
 
+          {/* Top services */}
+          <div key={`top-${monthIdx}`} className="animate-fade-up" style={{ animationDelay: "350ms" }}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Top services
+              </h3>
+              <span className="text-xs text-muted-foreground tabular-nums">{totalTopServices} bookings</span>
+            </div>
+            <div className="rounded-xl border border-border/60 bg-card divide-y divide-border/40 overflow-hidden">
+              {topServices.map((s, i) => {
+                const Icon = s.icon;
+                const pct = totalTopServices > 0 ? (s.count / totalTopServices) * 100 : 0;
+                return (
+                  <div
+                    key={s.name}
+                    className="px-3.5 py-3 animate-fade-up"
+                    style={{ animationDelay: `${380 + i * 80}ms` }}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-8 h-8 rounded-lg ${s.tint} flex items-center justify-center shrink-0`}>
+                        <Icon className={`w-4 h-4 ${s.iconColor}`} />
+                      </div>
+                      <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+                        <span className="text-sm font-medium text-foreground truncate">{s.name}</span>
+                        <span className="text-xs text-muted-foreground tabular-nums shrink-0">
+                          {s.count} · {pct.toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-muted overflow-hidden ml-11">
+                      <div
+                        className="h-full bg-primary/80 rounded-full transition-all duration-700 ease-out"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Weekly bookings line chart */}
-          <div className="animate-fade-up" style={{ animationDelay: "400ms" }}>
+          <div key={`chart-${monthIdx}`} className="animate-fade-up" style={{ animationDelay: "400ms" }}>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Weekly bookings
               </h3>
-              <span className="text-xs text-muted-foreground tabular-nums">27 total</span>
+              <span className="text-xs text-muted-foreground tabular-nums">{weeklyTotal} total</span>
             </div>
             <div className="h-40 -mx-2">
               <ResponsiveContainer width="100%" height="100%">
