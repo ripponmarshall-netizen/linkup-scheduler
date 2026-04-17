@@ -157,8 +157,35 @@ export function AnalyticsScreen() {
         </div>
       ) : (
         <div className="px-5 space-y-8 mb-8">
+          {/* Month selector */}
+          <div
+            className="flex items-center justify-between rounded-xl border border-border/60 bg-card px-2 py-1.5 animate-fade-up"
+            style={{ animationDelay: "20ms" }}
+          >
+            <button
+              onClick={() => setMonthIdx((i) => Math.min(i + 1, MONTHS.length - 1))}
+              disabled={monthIdx >= MONTHS.length - 1}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground transition-all duration-150 hover:bg-accent/60 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Previous month"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span key={month.label} className="text-sm font-medium text-foreground tabular-nums animate-fade-up">
+              {month.label}
+            </span>
+            <button
+              onClick={() => setMonthIdx((i) => Math.max(i - 1, 0))}
+              disabled={monthIdx === 0}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground transition-all duration-150 hover:bg-accent/60 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Next month"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
           {/* Monthly revenue card */}
           <div
+            key={`rev-${monthIdx}`}
             className="p-4 rounded-xl border border-border/60 bg-card animate-pop-in"
             style={{ animationDelay: "40ms" }}
           >
@@ -168,7 +195,7 @@ export function AnalyticsScreen() {
                   <DollarSign className="w-3.5 h-3.5 text-primary" />
                 </div>
                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Revenue this month
+                  Revenue
                 </span>
               </div>
             </div>
@@ -186,12 +213,12 @@ export function AnalyticsScreen() {
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-1.5">
-              {isUp ? "+" : "−"}{formatJMD(Math.abs(revenueDelta))} vs last month
+              {isUp ? "+" : "−"}{formatJMD(Math.abs(revenueDelta))} vs previous month
             </p>
           </div>
 
           {/* Stat grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div key={`stats-${monthIdx}`} className="grid grid-cols-2 gap-3">
             {stats.map((stat, i) => {
               const Icon = stat.icon;
               return (
@@ -208,13 +235,54 @@ export function AnalyticsScreen() {
             })}
           </div>
 
+          {/* Top services */}
+          <div key={`top-${monthIdx}`} className="animate-fade-up" style={{ animationDelay: "350ms" }}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Top services
+              </h3>
+              <span className="text-xs text-muted-foreground tabular-nums">{totalTopServices} bookings</span>
+            </div>
+            <div className="rounded-xl border border-border/60 bg-card divide-y divide-border/40 overflow-hidden">
+              {topServices.map((s, i) => {
+                const Icon = s.icon;
+                const pct = totalTopServices > 0 ? (s.count / totalTopServices) * 100 : 0;
+                return (
+                  <div
+                    key={s.name}
+                    className="px-3.5 py-3 animate-fade-up"
+                    style={{ animationDelay: `${380 + i * 80}ms` }}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-8 h-8 rounded-lg ${s.tint} flex items-center justify-center shrink-0`}>
+                        <Icon className={`w-4 h-4 ${s.iconColor}`} />
+                      </div>
+                      <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+                        <span className="text-sm font-medium text-foreground truncate">{s.name}</span>
+                        <span className="text-xs text-muted-foreground tabular-nums shrink-0">
+                          {s.count} · {pct.toFixed(0)}%
+                        </span>
+                      </div>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-muted overflow-hidden ml-11">
+                      <div
+                        className="h-full bg-primary/80 rounded-full transition-all duration-700 ease-out"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Weekly bookings line chart */}
-          <div className="animate-fade-up" style={{ animationDelay: "400ms" }}>
+          <div key={`chart-${monthIdx}`} className="animate-fade-up" style={{ animationDelay: "400ms" }}>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Weekly bookings
               </h3>
-              <span className="text-xs text-muted-foreground tabular-nums">27 total</span>
+              <span className="text-xs text-muted-foreground tabular-nums">{weeklyTotal} total</span>
             </div>
             <div className="h-40 -mx-2">
               <ResponsiveContainer width="100%" height="100%">
