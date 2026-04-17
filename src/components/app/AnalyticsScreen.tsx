@@ -1,35 +1,127 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Lock, CalendarDays, CalendarRange, TrendingUp, TrendingDown, Scissors, DollarSign } from "lucide-react";
+import {
+  Lock,
+  CalendarDays,
+  CalendarRange,
+  TrendingUp,
+  TrendingDown,
+  Scissors,
+  DollarSign,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Brush,
+} from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
+type MonthData = {
+  revenue: number;
+  prevRevenue: number;
+  weekCount: number;
+  monthCount: number;
+  busiestDay: string;
+  weekly: { day: string; count: number }[];
+  topServices: { name: string; count: number; icon: typeof Scissors; tint: string; iconColor: string }[];
+};
+
+const MONTHS: { label: string; data: MonthData }[] = [
+  {
+    label: "April 2026",
+    data: {
+      revenue: 142500,
+      prevRevenue: 128000,
+      weekCount: 23,
+      monthCount: 87,
+      busiestDay: "Tuesday",
+      weekly: [
+        { day: "Mon", count: 5 },
+        { day: "Tue", count: 7 },
+        { day: "Wed", count: 4 },
+        { day: "Thu", count: 3 },
+        { day: "Fri", count: 6 },
+        { day: "Sat", count: 2 },
+        { day: "Sun", count: 0 },
+      ],
+      topServices: [
+        { name: "Fade", count: 34, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 26, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 18, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+      ],
+    },
+  },
+  {
+    label: "March 2026",
+    data: {
+      revenue: 128000,
+      prevRevenue: 119500,
+      weekCount: 21,
+      monthCount: 79,
+      busiestDay: "Saturday",
+      weekly: [
+        { day: "Mon", count: 4 },
+        { day: "Tue", count: 5 },
+        { day: "Wed", count: 3 },
+        { day: "Thu", count: 4 },
+        { day: "Fri", count: 5 },
+        { day: "Sat", count: 6 },
+        { day: "Sun", count: 1 },
+      ],
+      topServices: [
+        { name: "Fade", count: 30, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 22, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 15, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+      ],
+    },
+  },
+  {
+    label: "February 2026",
+    data: {
+      revenue: 119500,
+      prevRevenue: 124000,
+      weekCount: 19,
+      monthCount: 72,
+      busiestDay: "Friday",
+      weekly: [
+        { day: "Mon", count: 3 },
+        { day: "Tue", count: 4 },
+        { day: "Wed", count: 3 },
+        { day: "Thu", count: 4 },
+        { day: "Fri", count: 6 },
+        { day: "Sat", count: 5 },
+        { day: "Sun", count: 0 },
+      ],
+      topServices: [
+        { name: "Fade", count: 27, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Line up", count: 19, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+        { name: "Beard trim", count: 16, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+      ],
+    },
+  },
+];
 
 export function AnalyticsScreen() {
   const [isPro, setIsPro] = useState(false);
+  const [monthIdx, setMonthIdx] = useState(0);
+
+  const month = MONTHS[monthIdx];
+  const { revenue: currentRevenue, prevRevenue: previousRevenue, weekCount, monthCount, busiestDay, weekly: chartData, topServices } = month.data;
+  const topServiceName = topServices[0]?.name ?? "—";
+  const totalTopServices = topServices.reduce((sum, s) => sum + s.count, 0);
 
   const stats = [
-    { value: "23", label: "This week", icon: CalendarDays, tint: "bg-tint-blue", iconColor: "text-primary" },
-    { value: "87", label: "This month", icon: CalendarRange, tint: "bg-accent/60", iconColor: "text-primary" },
-    { value: "Tuesday", label: "Busiest day", icon: TrendingUp, tint: "bg-tint-amber", iconColor: "text-warning" },
-    { value: "Fade", label: "Top service", icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+    { value: String(weekCount), label: "This week", icon: CalendarDays, tint: "bg-tint-blue", iconColor: "text-primary" },
+    { value: String(monthCount), label: "This month", icon: CalendarRange, tint: "bg-accent/60", iconColor: "text-primary" },
+    { value: busiestDay, label: "Busiest day", icon: TrendingUp, tint: "bg-tint-amber", iconColor: "text-warning" },
+    { value: topServiceName, label: "Top service", icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
   ];
 
-  // Monthly revenue data
-  const currentRevenue = 142500;
-  const previousRevenue = 128000;
   const revenueDelta = currentRevenue - previousRevenue;
   const revenuePct = ((revenueDelta / previousRevenue) * 100).toFixed(1);
   const isUp = revenueDelta >= 0;
 
-  const chartData = [
-    { day: "Mon", count: 5 },
-    { day: "Tue", count: 7 },
-    { day: "Wed", count: 4 },
-    { day: "Thu", count: 3 },
-    { day: "Fri", count: 6 },
-    { day: "Sat", count: 2 },
-    { day: "Sun", count: 0 },
-  ];
+  const weeklyTotal = chartData.reduce((sum, d) => sum + d.count, 0);
 
   const formatJMD = (n: number) =>
     new Intl.NumberFormat("en-JM", { style: "currency", currency: "JMD", maximumFractionDigits: 0 }).format(n);
