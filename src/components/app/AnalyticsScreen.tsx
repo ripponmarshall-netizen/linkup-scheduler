@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Sparkles,
   Brush,
+  Download,
 } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -23,7 +24,7 @@ type MonthData = {
   monthCount: number;
   busiestDay: string;
   weekly: { day: string; count: number }[];
-  topServices: { name: string; count: number; icon: typeof Scissors; tint: string; iconColor: string }[];
+  topServices: { name: string; count: number; price: number; icon: typeof Scissors; tint: string; iconColor: string }[];
 };
 
 const MONTHS: { label: string; data: MonthData }[] = [
@@ -45,9 +46,9 @@ const MONTHS: { label: string; data: MonthData }[] = [
         { day: "Sun", count: 0 },
       ],
       topServices: [
-        { name: "Fade", count: 34, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
-        { name: "Beard trim", count: 26, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
-        { name: "Line up", count: 18, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+        { name: "Fade", count: 34, price: 2000, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 26, price: 1200, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 18, price: 800, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
       ],
     },
   },
@@ -69,9 +70,9 @@ const MONTHS: { label: string; data: MonthData }[] = [
         { day: "Sun", count: 1 },
       ],
       topServices: [
-        { name: "Fade", count: 30, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
-        { name: "Beard trim", count: 22, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
-        { name: "Line up", count: 15, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+        { name: "Fade", count: 30, price: 2000, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 22, price: 1200, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 15, price: 800, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
       ],
     },
   },
@@ -93,9 +94,9 @@ const MONTHS: { label: string; data: MonthData }[] = [
         { day: "Sun", count: 0 },
       ],
       topServices: [
-        { name: "Fade", count: 27, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
-        { name: "Line up", count: 19, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
-        { name: "Beard trim", count: 16, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Fade", count: 27, price: 2000, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Line up", count: 19, price: 800, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+        { name: "Beard trim", count: 16, price: 1200, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
       ],
     },
   },
@@ -126,17 +127,66 @@ export function AnalyticsScreen() {
   const formatJMD = (n: number) =>
     new Intl.NumberFormat("en-JM", { style: "currency", currency: "JMD", maximumFractionDigits: 0 }).format(n);
 
+  const topServicesRevenue = topServices.reduce((sum, s) => sum + s.count * s.price, 0);
+
+  const handleExport = () => {
+    const lines: string[] = [];
+    lines.push(`LinkupOrganiser Analytics — ${month.label}`);
+    lines.push("");
+    lines.push("Summary");
+    lines.push("Metric,Value");
+    lines.push(`Revenue (JMD),${currentRevenue}`);
+    lines.push(`Previous month revenue (JMD),${previousRevenue}`);
+    lines.push(`Change (%),${revenuePct}`);
+    lines.push(`Bookings this week,${weekCount}`);
+    lines.push(`Bookings this month,${monthCount}`);
+    lines.push(`Busiest day,${busiestDay}`);
+    lines.push("");
+    lines.push("Top services");
+    lines.push("Service,Bookings,Price (JMD),Revenue (JMD)");
+    topServices.forEach((s) => {
+      lines.push(`${s.name},${s.count},${s.price},${s.count * s.price}`);
+    });
+    lines.push("");
+    lines.push("Weekly bookings");
+    lines.push("Day,Bookings");
+    chartData.forEach((d) => lines.push(`${d.day},${d.count}`));
+
+    const csv = lines.join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `linkup-analytics-${month.label.toLowerCase().replace(/\s+/g, "-")}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="max-w-lg mx-auto">
       <div className="px-5 pt-8 pb-4 animate-fade-up">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold text-foreground">Analytics</h1>
-          <button
-            onClick={() => setIsPro(!isPro)}
-            className="text-xs text-primary font-medium transition-opacity duration-150 hover:opacity-80"
-          >
-            {isPro ? "View as Free" : "View as Pro"}
-          </button>
+          <div className="flex items-center gap-3">
+            {isPro && (
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-1.5 text-xs text-foreground font-medium px-2.5 py-1.5 rounded-lg border border-border/60 bg-card transition-all duration-150 hover:bg-accent/60 active:scale-95"
+                aria-label="Export CSV"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Export
+              </button>
+            )}
+            <button
+              onClick={() => setIsPro(!isPro)}
+              className="text-xs text-primary font-medium transition-opacity duration-150 hover:opacity-80"
+            >
+              {isPro ? "View as Free" : "View as Pro"}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -241,12 +291,13 @@ export function AnalyticsScreen() {
               <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Top services
               </h3>
-              <span className="text-xs text-muted-foreground tabular-nums">{totalTopServices} bookings</span>
+              <span className="text-xs text-muted-foreground tabular-nums">{formatJMD(topServicesRevenue)}</span>
             </div>
             <div className="rounded-xl border border-border/60 bg-card divide-y divide-border/40 overflow-hidden">
               {topServices.map((s, i) => {
                 const Icon = s.icon;
-                const pct = totalTopServices > 0 ? (s.count / totalTopServices) * 100 : 0;
+                const revenue = s.count * s.price;
+                const pct = topServicesRevenue > 0 ? (revenue / topServicesRevenue) * 100 : 0;
                 return (
                   <div
                     key={s.name}
@@ -257,11 +308,21 @@ export function AnalyticsScreen() {
                       <div className={`w-8 h-8 rounded-lg ${s.tint} flex items-center justify-center shrink-0`}>
                         <Icon className={`w-4 h-4 ${s.iconColor}`} />
                       </div>
-                      <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
-                        <span className="text-sm font-medium text-foreground truncate">{s.name}</span>
-                        <span className="text-xs text-muted-foreground tabular-nums shrink-0">
-                          {s.count} · {pct.toFixed(0)}%
-                        </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-medium text-foreground truncate">{s.name}</span>
+                          <span className="text-sm font-semibold text-foreground tabular-nums shrink-0">
+                            {formatJMD(revenue)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 mt-0.5">
+                          <span className="text-xs text-muted-foreground tabular-nums">
+                            {s.count} bookings · {formatJMD(s.price)}
+                          </span>
+                          <span className="text-xs text-muted-foreground tabular-nums shrink-0">
+                            {pct.toFixed(0)}%
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <div className="h-1.5 rounded-full bg-muted overflow-hidden ml-11">
