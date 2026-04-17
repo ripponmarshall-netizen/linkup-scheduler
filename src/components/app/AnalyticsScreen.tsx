@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Sparkles,
   Brush,
+  Download,
 } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
