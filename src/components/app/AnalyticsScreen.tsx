@@ -150,7 +150,7 @@ export function AnalyticsScreen() {
                       padding: "6px 10px",
                     }}
                     labelStyle={{ color: "var(--muted-foreground)", fontSize: "10px" }}
-                    formatter={(value: number) => [`${value} bookings`, ""]}
+                    formatter={(value) => [`${value} bookings`, ""]}
                   />
                   <Line
                     type="monotone"
