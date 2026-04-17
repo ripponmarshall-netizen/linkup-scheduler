@@ -70,9 +70,9 @@ const MONTHS: { label: string; data: MonthData }[] = [
         { day: "Sun", count: 1 },
       ],
       topServices: [
-        { name: "Fade", count: 30, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
-        { name: "Beard trim", count: 22, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
-        { name: "Line up", count: 15, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+        { name: "Fade", count: 30, price: 2000, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 22, price: 1200, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 15, price: 800, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
       ],
     },
   },
