@@ -25,7 +25,7 @@ export function AppBottomNav() {
                 isActive ? "text-primary" : "text-muted-foreground"
               }`}
             >
-              <item.icon className={`w-5 h-5 transition-all duration-200 ${isActive ? "scale-105" : "opacity-60"}`} />
+              <item.icon className={`w-5 h-5 transition-all duration-200 ${isActive ? "scale-110 animate-tab-bounce" : "opacity-60"}`} />
               <span className={`text-[10px] font-medium transition-all duration-200 ${isActive ? "opacity-100" : "opacity-70"}`}>{item.label}</span>
             </Link>
           );

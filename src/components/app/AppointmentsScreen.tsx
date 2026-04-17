@@ -34,45 +34,57 @@ export function AppointmentsScreen() {
       </div>
 
       <div className="px-5 flex gap-1 mb-5">
-        {tabs.map(tab => (
-          <button
-            key={tab.value}
-            onClick={() => setActiveTab(tab.value)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
-              activeTab === tab.value
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:bg-secondary active:scale-[0.97]"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {tabs.map(tab => {
+          const isActive = activeTab === tab.value;
+          return (
+            <button
+              key={tab.value}
+              onClick={() => setActiveTab(tab.value)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm animate-tab-bounce"
+                  : "text-muted-foreground hover:bg-secondary hover:scale-[1.03] active:scale-[0.97]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       <div className="px-5 mb-8">
         {filtered.length === 0 ? (
           <p className="text-sm text-muted-foreground py-8 text-center animate-fade-in">No appointments.</p>
         ) : (
-          <div className="space-y-px">
-            {filtered.map((appt, idx) => (
-              <button
-                key={appt.id}
-                onClick={() => setSelectedId(appt.id)}
-                className={`w-full flex items-center justify-between py-3.5 text-left -mx-2 px-2 rounded-lg transition-all duration-200 animate-fade-up active:scale-[0.99] ${
-                  selectedId === appt.id ? "bg-accent/50" : "hover:bg-secondary/50"
-                }`}
-                style={{ animationDelay: `${idx * 40}ms` }}
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{appt.client}</p>
-                  <p className="text-xs text-muted-foreground">{appt.service}</p>
-                </div>
-                <div className="text-right shrink-0 ml-3">
-                  <p className="text-xs text-muted-foreground">{appt.date}</p>
-                  <p className="text-xs text-muted-foreground">{appt.time}</p>
-                </div>
-              </button>
-            ))}
+          <div className="divide-y divide-border/40">
+            {filtered.map((appt, idx) => {
+              const dotColor =
+                appt.status === "completed" ? "bg-success" :
+                appt.status === "cancelled" ? "bg-destructive/70" :
+                "bg-primary";
+              return (
+                <button
+                  key={appt.id}
+                  onClick={() => setSelectedId(appt.id)}
+                  className={`w-full flex items-center justify-between py-3.5 text-left -mx-2 px-2 rounded-lg transition-all duration-200 animate-fade-up active:scale-[0.99] ${
+                    selectedId === appt.id ? "bg-accent/60" : "hover:bg-secondary/40"
+                  }`}
+                  style={{ animationDelay: `${idx * 40}ms` }}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{appt.client}</p>
+                      <p className="text-xs text-muted-foreground">{appt.service}</p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 ml-3">
+                    <p className="text-xs text-foreground font-medium">{appt.date}</p>
+                    <p className="text-xs text-muted-foreground">{appt.time}</p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
