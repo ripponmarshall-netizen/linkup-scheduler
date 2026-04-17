@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Lock } from "lucide-react";
+import { Lock, CalendarDays, CalendarRange, TrendingUp, Scissors } from "lucide-react";
 
 export function AnalyticsScreen() {
   const [isPro, setIsPro] = useState(false);
 
   const stats = [
-    { value: "23", label: "This week" },
-    { value: "87", label: "This month" },
-    { value: "Tuesday", label: "Busiest day" },
-    { value: "Fade", label: "Top service" },
+    { value: "23", label: "This week", icon: CalendarDays, tint: "bg-tint-blue text-foreground", iconColor: "text-primary" },
+    { value: "87", label: "This month", icon: CalendarRange, tint: "bg-accent/60 text-foreground", iconColor: "text-primary" },
+    { value: "Tuesday", label: "Busiest day", icon: TrendingUp, tint: "bg-tint-amber text-foreground", iconColor: "text-warning" },
+    { value: "Fade", label: "Top service", icon: Scissors, tint: "bg-tint-violet text-foreground", iconColor: "text-primary" },
   ];
 
   const chartData = [
@@ -54,17 +54,21 @@ export function AnalyticsScreen() {
         </div>
       ) : (
         <div className="px-5 space-y-8 mb-8">
-          <div className="grid grid-cols-2 gap-4">
-            {stats.map((stat, i) => (
-              <div
-                key={i}
-                className="py-2 animate-fade-up"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <p className="text-xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 gap-3">
+            {stats.map((stat, i) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={i}
+                  className={`p-3.5 rounded-xl border border-border/50 ${stat.tint} animate-pop-in transition-transform duration-200 hover:scale-[1.02]`}
+                  style={{ animationDelay: `${i * 70}ms` }}
+                >
+                  <Icon className={`w-3.5 h-3.5 ${stat.iconColor} mb-2`} />
+                  <p className="text-xl font-bold text-foreground">{stat.value}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+                </div>
+              );
+            })}
           </div>
 
           <div className="animate-fade-up" style={{ animationDelay: "250ms" }}>
