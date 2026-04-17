@@ -59,10 +59,10 @@ export function CalendarScreen() {
               onClick={() => setSelectedDay(day)}
               className={`aspect-square rounded-lg flex flex-col items-center justify-center text-sm transition-all duration-200 ${
                 isSelected
-                  ? "bg-primary text-primary-foreground font-semibold shadow-sm scale-[1.05]"
+                  ? "bg-primary text-primary-foreground font-semibold shadow-md animate-pop-in"
                   : isToday
-                    ? "text-primary font-semibold"
-                    : "text-foreground hover:bg-secondary active:scale-95"
+                    ? "text-primary font-semibold ring-1 ring-primary/30"
+                    : "text-foreground hover:bg-secondary hover:scale-[1.05] active:scale-95"
               }`}
             >
               {day}
@@ -79,14 +79,15 @@ export function CalendarScreen() {
         {events.length === 0 ? (
           <p className="text-sm text-muted-foreground py-6 text-center animate-fade-in">No appointments.</p>
         ) : (
-          <div className="space-y-px">
+          <div className="divide-y divide-border/40">
             {events.map((e, i) => (
               <div
                 key={i}
-                className="flex items-center gap-4 py-3 animate-fade-up"
+                className="flex items-center gap-3 py-3 animate-fade-up"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
                 <span className="text-xs text-muted-foreground w-16 shrink-0 tabular-nums">{e.time}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{e.client}</p>
                   <p className="text-xs text-muted-foreground truncate">{e.service}</p>
