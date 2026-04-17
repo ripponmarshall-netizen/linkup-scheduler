@@ -24,7 +24,7 @@ type MonthData = {
   monthCount: number;
   busiestDay: string;
   weekly: { day: string; count: number }[];
-  topServices: { name: string; count: number; icon: typeof Scissors; tint: string; iconColor: string }[];
+  topServices: { name: string; count: number; price: number; icon: typeof Scissors; tint: string; iconColor: string }[];
 };
 
 const MONTHS: { label: string; data: MonthData }[] = [
