@@ -291,12 +291,13 @@ export function AnalyticsScreen() {
               <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Top services
               </h3>
-              <span className="text-xs text-muted-foreground tabular-nums">{totalTopServices} bookings</span>
+              <span className="text-xs text-muted-foreground tabular-nums">{formatJMD(topServicesRevenue)}</span>
             </div>
             <div className="rounded-xl border border-border/60 bg-card divide-y divide-border/40 overflow-hidden">
               {topServices.map((s, i) => {
                 const Icon = s.icon;
-                const pct = totalTopServices > 0 ? (s.count / totalTopServices) * 100 : 0;
+                const revenue = s.count * s.price;
+                const pct = topServicesRevenue > 0 ? (revenue / topServicesRevenue) * 100 : 0;
                 return (
                   <div
                     key={s.name}
@@ -307,11 +308,21 @@ export function AnalyticsScreen() {
                       <div className={`w-8 h-8 rounded-lg ${s.tint} flex items-center justify-center shrink-0`}>
                         <Icon className={`w-4 h-4 ${s.iconColor}`} />
                       </div>
-                      <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
-                        <span className="text-sm font-medium text-foreground truncate">{s.name}</span>
-                        <span className="text-xs text-muted-foreground tabular-nums shrink-0">
-                          {s.count} · {pct.toFixed(0)}%
-                        </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-medium text-foreground truncate">{s.name}</span>
+                          <span className="text-sm font-semibold text-foreground tabular-nums shrink-0">
+                            {formatJMD(revenue)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 mt-0.5">
+                          <span className="text-xs text-muted-foreground tabular-nums">
+                            {s.count} bookings · {formatJMD(s.price)}
+                          </span>
+                          <span className="text-xs text-muted-foreground tabular-nums shrink-0">
+                            {pct.toFixed(0)}%
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <div className="h-1.5 rounded-full bg-muted overflow-hidden ml-11">
