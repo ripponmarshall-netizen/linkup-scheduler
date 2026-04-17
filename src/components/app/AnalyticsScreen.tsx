@@ -46,9 +46,9 @@ const MONTHS: { label: string; data: MonthData }[] = [
         { day: "Sun", count: 0 },
       ],
       topServices: [
-        { name: "Fade", count: 34, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
-        { name: "Beard trim", count: 26, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
-        { name: "Line up", count: 18, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
+        { name: "Fade", count: 34, price: 2000, icon: Scissors, tint: "bg-tint-violet", iconColor: "text-primary" },
+        { name: "Beard trim", count: 26, price: 1200, icon: Brush, tint: "bg-tint-blue", iconColor: "text-primary" },
+        { name: "Line up", count: 18, price: 800, icon: Sparkles, tint: "bg-tint-amber", iconColor: "text-warning" },
       ],
     },
   },
