@@ -275,14 +275,24 @@ export function AnalyticsScreen() {
           <h1 className="text-lg font-semibold text-foreground">Analytics</h1>
           <div className="flex items-center gap-3">
             {isPro && (
-              <button
-                onClick={handleExport}
-                className="flex items-center gap-1.5 text-xs text-foreground font-medium px-2.5 py-1.5 rounded-lg border border-border/60 bg-card transition-all duration-150 hover:bg-accent/60 active:scale-95"
-                aria-label="Export CSV"
-              >
-                <Download className="w-3.5 h-3.5" />
-                Export
-              </button>
+              <>
+                <button
+                  onClick={handleExportPDF}
+                  className="flex items-center gap-1.5 text-xs text-foreground font-medium px-2.5 py-1.5 rounded-lg border border-border/60 bg-card transition-all duration-150 hover:bg-accent/60 active:scale-95"
+                  aria-label="Export PDF"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  PDF
+                </button>
+                <button
+                  onClick={handleExport}
+                  className="flex items-center gap-1.5 text-xs text-foreground font-medium px-2.5 py-1.5 rounded-lg border border-border/60 bg-card transition-all duration-150 hover:bg-accent/60 active:scale-95"
+                  aria-label="Export CSV"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  CSV
+                </button>
+              </>
             )}
             <button
               onClick={() => setIsPro(!isPro)}
