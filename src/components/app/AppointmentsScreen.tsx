@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { X, Link2, Lock, Copy, Check } from "lucide-react";
 
 type AppointmentStatus = "upcoming" | "completed" | "cancelled";
 
