@@ -77,6 +77,10 @@ export function SettingsScreen() {
   }, [draft, editing, slug]);
 
   const openEditor = () => {
+    if (!isPro) {
+      navigate({ to: "/app/upgrade" });
+      return;
+    }
     setDraft(slug);
     setStatus({ kind: "idle" });
     setEditing(true);
@@ -94,14 +98,24 @@ export function SettingsScreen() {
     setEditing(false);
   };
 
-  const businessItems = useMemo(
+  type SettingsItem = {
+    label: string;
+    value: string;
+    action: (() => void) | null;
+    to?: "/app/clients" | "/app/upgrade";
+    pro?: boolean;
+  };
+
+  const businessItems: SettingsItem[] = useMemo(
     () => [
       { label: "Business name", value: "Marcus Cuts", action: null },
-      { label: "Booking link", value: `linkup.app/${slug}`, action: openEditor },
+      { label: "Booking link", value: `linkup.app/${slug}`, action: openEditor, pro: true },
       { label: "Working hours", value: "Mon–Fri, 9–5", action: null },
       { label: "Services", value: "5 services", action: null },
     ],
-    [slug],
+    // openEditor depends on isPro; recompute when plan changes too
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [slug, isPro],
   );
 
   const sections = [
