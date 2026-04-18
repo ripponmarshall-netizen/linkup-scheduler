@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { X, Link2, Lock, Copy, Check } from "lucide-react";
+import { X, Link2, Lock, Copy, Check, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 type AppointmentStatus = "upcoming" | "completed" | "cancelled";
 
@@ -26,6 +27,7 @@ export function AppointmentsScreen() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isPro, setIsPro] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showQR, setShowQR] = useState(false);
 
   const filtered = allAppointments.filter(a => a.status === activeTab);
   const selected = allAppointments.find(a => a.id === selectedId);
@@ -63,6 +65,13 @@ export function AppointmentsScreen() {
               <div className="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg bg-muted/60 border border-border/40">
                 <p className="text-xs text-foreground truncate font-mono">{bookingUrl}</p>
               </div>
+              <button
+                onClick={() => setShowQR(true)}
+                className="h-8 w-8 rounded-lg border border-border/60 bg-card text-foreground flex items-center justify-center transition-all duration-200 hover:bg-accent/60 active:scale-95"
+                aria-label="Show QR code"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+              </button>
               <button
                 onClick={handleCopy}
                 className="h-8 px-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium flex items-center gap-1 transition-all duration-200 active:scale-95"
@@ -179,6 +188,44 @@ export function AppointmentsScreen() {
               <button className="flex-1 h-10 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium transition-all duration-200 active:scale-[0.97]">Edit</button>
               <button className="flex-1 h-10 rounded-lg text-destructive text-sm font-medium transition-all duration-200 active:scale-[0.97]">Cancel</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showQR && (
+        <div
+          className="fixed inset-0 z-50 bg-foreground/20 backdrop-blur-[2px] flex items-center justify-center p-5 animate-fade-in"
+          onClick={() => setShowQR(false)}
+        >
+          <div
+            className="bg-card w-full max-w-xs rounded-2xl p-6 shadow-lg animate-pop-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-foreground">Scan to book</h2>
+              <button
+                onClick={() => setShowQR(false)}
+                className="p-1 transition-all duration-150 active:scale-90"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="rounded-xl bg-white p-4 flex items-center justify-center border border-border/40">
+              <QRCodeSVG
+                value={`https://${bookingUrl}`}
+                size={208}
+                level="M"
+                bgColor="#ffffff"
+                fgColor="#000000"
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground text-center mt-3 font-mono truncate">
+              {bookingUrl}
+            </p>
+            <p className="text-xs text-muted-foreground text-center mt-1">
+              Show this to walk-in clients to book on their phone.
+            </p>
           </div>
         </div>
       )}
