@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { X, Link2, Lock, Copy, Check } from "lucide-react";
+import { X, Link2, Lock, Copy, Check, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 type AppointmentStatus = "upcoming" | "completed" | "cancelled";
 
