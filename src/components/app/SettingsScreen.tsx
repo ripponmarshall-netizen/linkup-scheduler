@@ -118,7 +118,13 @@ export function SettingsScreen() {
     [slug, isPro],
   );
 
-  const sections = [
+  const sections: {
+    title: string;
+    icon: typeof Briefcase;
+    iconBg: string;
+    iconColor: string;
+    items: SettingsItem[];
+  }[] = [
     {
       title: "Business",
       icon: Briefcase,
@@ -132,7 +138,7 @@ export function SettingsScreen() {
       iconBg: "bg-tint-violet",
       iconColor: "text-primary",
       items: [
-        { label: "Clients", value: "", to: "/app/clients" as const, action: null },
+        { label: "Clients", value: "", to: "/app/clients", action: null },
       ],
     },
     {
@@ -148,7 +154,7 @@ export function SettingsScreen() {
       iconBg: "bg-tint-violet",
       iconColor: "text-primary",
       items: [
-        { label: "Subscription", value: "Free plan", to: "/app/upgrade" as const, action: null },
+        { label: "Subscription", value: isPro ? "Pro plan" : "Free plan", to: "/app/upgrade", action: null },
         { label: "Support", value: "", action: null },
       ],
     },
@@ -156,8 +162,14 @@ export function SettingsScreen() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="px-5 pt-8 pb-4 animate-fade-up">
+      <div className="px-5 pt-8 pb-4 animate-fade-up flex items-center justify-between">
         <h1 className="text-lg font-semibold text-foreground">Settings</h1>
+        <button
+          onClick={() => setIsPro((p) => !p)}
+          className="text-xs text-primary font-medium transition-opacity duration-150 hover:opacity-80"
+        >
+          {isPro ? "View as Free" : "View as Pro"}
+        </button>
       </div>
 
       <div className="px-5 space-y-6 mb-8">
