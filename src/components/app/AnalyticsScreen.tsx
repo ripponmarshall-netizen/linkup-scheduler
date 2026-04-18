@@ -14,7 +14,9 @@ import {
   Sparkles,
   Brush,
   Download,
+  FileText,
 } from "lucide-react";
+import jsPDF from "jspdf";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type MonthData = {
@@ -161,7 +163,109 @@ export function AnalyticsScreen() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const pageW = doc.internal.pageSize.getWidth();
+    const margin = 48;
+    let y = margin;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("LinkupOrganiser", margin, y);
+    y += 20;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(120);
+    doc.text(`Monthly report — ${month.label}`, margin, y);
+    y += 28;
+    doc.setDrawColor(220);
+    doc.line(margin, y, pageW - margin, y);
+    y += 24;
+
+    doc.setTextColor(20);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Revenue summary", margin, y);
+    y += 18;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    const summary = [
+      ["Revenue", formatJMD(currentRevenue)],
+      ["Previous month", formatJMD(previousRevenue)],
+      ["Change", `${isUp ? "+" : ""}${revenuePct}% (${isUp ? "+" : "−"}${formatJMD(Math.abs(revenueDelta))})`],
+      ["Bookings this week", String(weekCount)],
+      ["Bookings this month", String(monthCount)],
+      ["Busiest day", busiestDay],
+    ];
+    summary.forEach(([k, v]) => {
+      doc.setTextColor(110);
+      doc.text(k, margin, y);
+      doc.setTextColor(20);
+      doc.text(String(v), pageW - margin, y, { align: "right" });
+      y += 16;
+    });
+
+    y += 14;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Top services", margin, y);
+    y += 18;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(110);
+    doc.text("Service", margin, y);
+    doc.text("Bookings", margin + 200, y);
+    doc.text("Price", margin + 290, y);
+    doc.text("Revenue", pageW - margin, y, { align: "right" });
+    y += 12;
+    doc.setDrawColor(230);
+    doc.line(margin, y, pageW - margin, y);
+    y += 14;
+    doc.setTextColor(20);
+    doc.setFontSize(11);
+    topServices.forEach((s) => {
+      doc.text(s.name, margin, y);
+      doc.text(String(s.count), margin + 200, y);
+      doc.text(formatJMD(s.price), margin + 290, y);
+      doc.text(formatJMD(s.count * s.price), pageW - margin, y, { align: "right" });
+      y += 16;
+    });
+    y += 6;
+    doc.setFont("helvetica", "bold");
+    doc.text("Total", margin, y);
+    doc.text(formatJMD(topServicesRevenue), pageW - margin, y, { align: "right" });
+    y += 26;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Weekly bookings", margin, y);
+    y += 18;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    chartData.forEach((d) => {
+      doc.setTextColor(110);
+      doc.text(d.day, margin, y);
+      doc.setTextColor(20);
+      doc.text(String(d.count), pageW - margin, y, { align: "right" });
+      y += 16;
+    });
+    y += 6;
+    doc.setFont("helvetica", "bold");
+    doc.text("Total", margin, y);
+    doc.text(String(weeklyTotal), pageW - margin, y, { align: "right" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(150);
+    doc.text(
+      `Generated ${new Date().toLocaleDateString("en-JM", { year: "numeric", month: "long", day: "numeric" })}`,
+      margin,
+      doc.internal.pageSize.getHeight() - 24,
+    );
+
+    doc.save(`linkup-analytics-${month.label.toLowerCase().replace(/\s+/g, "-")}.pdf`);
   };
 
   return (
@@ -171,14 +275,24 @@ export function AnalyticsScreen() {
           <h1 className="text-lg font-semibold text-foreground">Analytics</h1>
           <div className="flex items-center gap-3">
             {isPro && (
-              <button
-                onClick={handleExport}
-                className="flex items-center gap-1.5 text-xs text-foreground font-medium px-2.5 py-1.5 rounded-lg border border-border/60 bg-card transition-all duration-150 hover:bg-accent/60 active:scale-95"
-                aria-label="Export CSV"
-              >
-                <Download className="w-3.5 h-3.5" />
-                Export
-              </button>
+              <>
+                <button
+                  onClick={handleExportPDF}
+                  className="flex items-center gap-1.5 text-xs text-foreground font-medium px-2.5 py-1.5 rounded-lg border border-border/60 bg-card transition-all duration-150 hover:bg-accent/60 active:scale-95"
+                  aria-label="Export PDF"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  PDF
+                </button>
+                <button
+                  onClick={handleExport}
+                  className="flex items-center gap-1.5 text-xs text-foreground font-medium px-2.5 py-1.5 rounded-lg border border-border/60 bg-card transition-all duration-150 hover:bg-accent/60 active:scale-95"
+                  aria-label="Export CSV"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  CSV
+                </button>
+              </>
             )}
             <button
               onClick={() => setIsPro(!isPro)}
