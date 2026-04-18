@@ -185,12 +185,24 @@ export function SettingsScreen() {
               </div>
               <div className="rounded-xl border border-border/50 bg-card divide-y divide-border/40 overflow-hidden">
                 {section.items.map((item, j) => {
+                  const locked = item.pro && !isPro;
                   const content = (
                     <div className="flex items-center justify-between py-3.5 px-3.5 hover:bg-secondary/40 transition-all duration-200 active:scale-[0.99]">
-                      <span className="text-sm text-foreground">{item.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-foreground">{item.label}</span>
+                        {item.pro && (
+                          <span className="text-[10px] font-medium text-primary uppercase tracking-wider bg-tint-violet px-1.5 py-0.5 rounded">
+                            Pro
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-1.5 shrink-0 min-w-0">
-                        {item.value && (
-                          <span className="text-xs text-muted-foreground truncate max-w-[180px]">{item.value}</span>
+                        {locked ? (
+                          <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                        ) : (
+                          item.value && (
+                            <span className="text-xs text-muted-foreground truncate max-w-[180px]">{item.value}</span>
+                          )
                         )}
                         <ChevronRight className="w-3.5 h-3.5 text-muted-foreground transition-transform duration-150 shrink-0" />
                       </div>
