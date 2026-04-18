@@ -11,6 +11,7 @@ import {
   Check,
   Loader2,
   AlertCircle,
+  Lock,
 } from "lucide-react";
 
 // Reserved + already-taken slugs (mock availability backend)
@@ -45,6 +46,7 @@ function validateSlugFormat(slug: string): string | null {
 
 export function SettingsScreen() {
   const navigate = useNavigate();
+  const [isPro, setIsPro] = useState(false);
   const [slug, setSlug] = useState("marcus-cuts");
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(slug);
@@ -75,6 +77,10 @@ export function SettingsScreen() {
   }, [draft, editing, slug]);
 
   const openEditor = () => {
+    if (!isPro) {
+      navigate({ to: "/app/upgrade" });
+      return;
+    }
     setDraft(slug);
     setStatus({ kind: "idle" });
     setEditing(true);
@@ -92,17 +98,33 @@ export function SettingsScreen() {
     setEditing(false);
   };
 
-  const businessItems = useMemo(
+  type SettingsItem = {
+    label: string;
+    value: string;
+    action: (() => void) | null;
+    to?: "/app/clients" | "/app/upgrade";
+    pro?: boolean;
+  };
+
+  const businessItems: SettingsItem[] = useMemo(
     () => [
       { label: "Business name", value: "Marcus Cuts", action: null },
-      { label: "Booking link", value: `linkup.app/${slug}`, action: openEditor },
+      { label: "Booking link", value: `linkup.app/${slug}`, action: openEditor, pro: true },
       { label: "Working hours", value: "Mon–Fri, 9–5", action: null },
       { label: "Services", value: "5 services", action: null },
     ],
-    [slug],
+    // openEditor depends on isPro; recompute when plan changes too
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [slug, isPro],
   );
 
-  const sections = [
+  const sections: {
+    title: string;
+    icon: typeof Briefcase;
+    iconBg: string;
+    iconColor: string;
+    items: SettingsItem[];
+  }[] = [
     {
       title: "Business",
       icon: Briefcase,
@@ -116,7 +138,7 @@ export function SettingsScreen() {
       iconBg: "bg-tint-violet",
       iconColor: "text-primary",
       items: [
-        { label: "Clients", value: "", to: "/app/clients" as const, action: null },
+        { label: "Clients", value: "", to: "/app/clients", action: null },
       ],
     },
     {
@@ -132,7 +154,7 @@ export function SettingsScreen() {
       iconBg: "bg-tint-violet",
       iconColor: "text-primary",
       items: [
-        { label: "Subscription", value: "Free plan", to: "/app/upgrade" as const, action: null },
+        { label: "Subscription", value: isPro ? "Pro plan" : "Free plan", to: "/app/upgrade", action: null },
         { label: "Support", value: "", action: null },
       ],
     },
@@ -140,8 +162,14 @@ export function SettingsScreen() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="px-5 pt-8 pb-4 animate-fade-up">
+      <div className="px-5 pt-8 pb-4 animate-fade-up flex items-center justify-between">
         <h1 className="text-lg font-semibold text-foreground">Settings</h1>
+        <button
+          onClick={() => setIsPro((p) => !p)}
+          className="text-xs text-primary font-medium transition-opacity duration-150 hover:opacity-80"
+        >
+          {isPro ? "View as Free" : "View as Pro"}
+        </button>
       </div>
 
       <div className="px-5 space-y-6 mb-8">
@@ -157,12 +185,24 @@ export function SettingsScreen() {
               </div>
               <div className="rounded-xl border border-border/50 bg-card divide-y divide-border/40 overflow-hidden">
                 {section.items.map((item, j) => {
+                  const locked = item.pro && !isPro;
                   const content = (
                     <div className="flex items-center justify-between py-3.5 px-3.5 hover:bg-secondary/40 transition-all duration-200 active:scale-[0.99]">
-                      <span className="text-sm text-foreground">{item.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-foreground">{item.label}</span>
+                        {item.pro && (
+                          <span className="text-[10px] font-medium text-primary uppercase tracking-wider bg-tint-violet px-1.5 py-0.5 rounded">
+                            Pro
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-1.5 shrink-0 min-w-0">
-                        {item.value && (
-                          <span className="text-xs text-muted-foreground truncate max-w-[180px]">{item.value}</span>
+                        {locked ? (
+                          <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                        ) : (
+                          item.value && (
+                            <span className="text-xs text-muted-foreground truncate max-w-[180px]">{item.value}</span>
+                          )
                         )}
                         <ChevronRight className="w-3.5 h-3.5 text-muted-foreground transition-transform duration-150 shrink-0" />
                       </div>
