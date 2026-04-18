@@ -66,6 +66,13 @@ export function AppointmentsScreen() {
                 <p className="text-xs text-foreground truncate font-mono">{bookingUrl}</p>
               </div>
               <button
+                onClick={() => setShowQR(true)}
+                className="h-8 w-8 rounded-lg border border-border/60 bg-card text-foreground flex items-center justify-center transition-all duration-200 hover:bg-accent/60 active:scale-95"
+                aria-label="Show QR code"
+              >
+                <QrCode className="w-3.5 h-3.5" />
+              </button>
+              <button
                 onClick={handleCopy}
                 className="h-8 px-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium flex items-center gap-1 transition-all duration-200 active:scale-95"
                 aria-label="Copy booking link"
