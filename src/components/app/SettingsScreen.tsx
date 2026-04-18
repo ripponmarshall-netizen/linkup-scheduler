@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, LogOut, Briefcase, SlidersHorizontal, UserCircle2 } from "lucide-react";
+import { ChevronRight, LogOut, Briefcase, SlidersHorizontal, UserCircle2, Users } from "lucide-react";
 
 const settingsSections = [
   {
@@ -11,6 +11,15 @@ const settingsSections = [
       { label: "Business name", value: "Marcus Cuts", to: null },
       { label: "Working hours", value: "Mon–Fri, 9–5", to: null },
       { label: "Services", value: "5 services", to: null },
+    ],
+  },
+  {
+    title: "Manage",
+    icon: Users,
+    iconBg: "bg-tint-violet",
+    iconColor: "text-primary",
+    items: [
+      { label: "Clients", value: "", to: "/app/clients" as const },
     ],
   },
   {

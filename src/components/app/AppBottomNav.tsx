@@ -1,11 +1,10 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { CalendarDays, Calendar, ClipboardList, Users, BarChart3, Settings } from "lucide-react";
+import { CalendarDays, Calendar, ClipboardList, BarChart3, Settings } from "lucide-react";
 
 const navItems = [
   { to: "/app/today" as const, icon: CalendarDays, label: "Today" },
   { to: "/app/calendar" as const, icon: Calendar, label: "Calendar" },
   { to: "/app/appointments" as const, icon: ClipboardList, label: "Bookings" },
-  { to: "/app/clients" as const, icon: Users, label: "Clients" },
   { to: "/app/analytics" as const, icon: BarChart3, label: "Analytics" },
   { to: "/app/settings" as const, icon: Settings, label: "Settings" },
 ];
