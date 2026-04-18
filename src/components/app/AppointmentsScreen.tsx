@@ -191,6 +191,44 @@ export function AppointmentsScreen() {
           </div>
         </div>
       )}
+
+      {showQR && (
+        <div
+          className="fixed inset-0 z-50 bg-foreground/20 backdrop-blur-[2px] flex items-center justify-center p-5 animate-fade-in"
+          onClick={() => setShowQR(false)}
+        >
+          <div
+            className="bg-card w-full max-w-xs rounded-2xl p-6 shadow-lg animate-pop-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-foreground">Scan to book</h2>
+              <button
+                onClick={() => setShowQR(false)}
+                className="p-1 transition-all duration-150 active:scale-90"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="rounded-xl bg-white p-4 flex items-center justify-center border border-border/40">
+              <QRCodeSVG
+                value={`https://${bookingUrl}`}
+                size={208}
+                level="M"
+                bgColor="#ffffff"
+                fgColor="#000000"
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground text-center mt-3 font-mono truncate">
+              {bookingUrl}
+            </p>
+            <p className="text-xs text-muted-foreground text-center mt-1">
+              Show this to walk-in clients to book on their phone.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
