@@ -27,6 +27,7 @@ export function AppointmentsScreen() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isPro, setIsPro] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showQR, setShowQR] = useState(false);
 
   const filtered = allAppointments.filter(a => a.status === activeTab);
   const selected = allAppointments.find(a => a.id === selectedId);
