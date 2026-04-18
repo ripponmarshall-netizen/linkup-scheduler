@@ -46,6 +46,7 @@ function validateSlugFormat(slug: string): string | null {
 
 export function SettingsScreen() {
   const navigate = useNavigate();
+  const [isPro, setIsPro] = useState(false);
   const [slug, setSlug] = useState("marcus-cuts");
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(slug);
