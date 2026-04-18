@@ -14,7 +14,9 @@ import {
   Sparkles,
   Brush,
   Download,
+  FileText,
 } from "lucide-react";
+import jsPDF from "jspdf";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 type MonthData = {
