@@ -11,6 +11,7 @@ import {
   Check,
   Loader2,
   AlertCircle,
+  Lock,
 } from "lucide-react";
 
 // Reserved + already-taken slugs (mock availability backend)
