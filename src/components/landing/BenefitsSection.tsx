@@ -1,15 +1,15 @@
 const benefits = [
   {
-    title: "Stay organised every day",
-    description: "See your full schedule at a glance. Know who's coming, when you're free, and what's next.",
+    title: "Your day, sorted before you wake up",
+    description: "See every client, every deposit, and every gap at a glance. No more flipping between WhatsApp, Notes, and your memory.",
   },
   {
-    title: "Less back-and-forth",
-    description: "Set reminders, reschedule with a tap, and keep notes on each client.",
+    title: "Let the app do the chasing",
+    description: "Automatic confirmations, reminders, and 'pull up in 30 mins' texts. You stop being a receptionist and get back to the art.",
   },
   {
-    title: "Accept bookings online",
-    description: "Upgrade to Pro and share a booking link. Clients pick a time, you confirm.",
+    title: "One link does the booking for you",
+    description: "Drop your LinkupOrganiser link in your IG bio. Clients pick their slot, pay a deposit, and you just approve. Done.",
   },
 ];
 
